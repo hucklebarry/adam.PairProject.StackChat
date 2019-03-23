@@ -1,6 +1,18 @@
 import React from 'react';
+import {connect} from 'react-redux'
 
-export default function Message (props) {
+const mapState = (state) => {
+  return {
+    messages: state.messages
+  }
+}
+const mapDispatch = (dispatch) => {
+  return {
+    fetchInitialMessages: () => dispatch(fetchMessages())
+  }
+}
+
+function Message (props) {
 
   const message = props.message;
 
@@ -18,3 +30,6 @@ export default function Message (props) {
     </li>
   );
 }
+
+
+export default connect(mapState, mapDispatch)(Message)

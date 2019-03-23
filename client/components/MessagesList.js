@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import Message from './Message';
 import NewMessageEntry from './NewMessageEntry';
 import axios from 'axios';
+import {connect} from 'react-redux'
+import {fetchMessages} from '../store'
 
-export default class MessagesList extends Component {
+export class MessagesList extends Component {
 
   constructor () {
     super();
@@ -11,9 +13,9 @@ export default class MessagesList extends Component {
   }
 
   async componentDidMount () {
-    const response = await axios.get('/api/messages');
-    const messages = response.data;
-    this.setState({ messages });
+    console.log(this.props)
+    await this.props.fetchInitialMessages()
+    this.setState({messages: this.props.messages})
   }
 
   render () {
@@ -27,8 +29,21 @@ export default class MessagesList extends Component {
         <ul className="media-list">
           { filteredMessages.map(message => <Message message={message} key={message.id} />) }
         </ul>
-        <NewMessageEntry />
+        <NewMessageEntry channelId={channelId} newMessageEntry={NewMessageEntry}/>
       </div>
     );
   }
 }
+const mapState = (state) => {
+  return {
+    messages: state.messages
+  }
+}
+const mapDispatch = (dispatch) => {
+  return {
+    fetchInitialMessages: () => dispatch(fetchMessages())
+  }
+}
+
+
+export default connect(mapState, mapDispatch)(MessagesList)
